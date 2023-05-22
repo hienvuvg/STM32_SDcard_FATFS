@@ -56,6 +56,7 @@ uint16_t total_n_sample = 0;
 
 
 int16_t data_buff[BUFF_LENGTH];
+int16_t value = 0;
 uint16_t array_len = 0;
 
 
@@ -68,11 +69,6 @@ static void MX_USART2_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
-void ADXL_Config(void);
-void adxl_convert(float *data);
-void RTC_set_time(void);
-void RTC_get_time(void);
-void LF_SystemConfig(void);
 
 /* USER CODE END PFP */
 
@@ -131,9 +127,13 @@ int main(void)
 	/************* START THE OPERATION *************/
 	while (1) {
 
-		array_len = 0;
+		data_buff[0] = 31313; // -32768 to 32767
+		data_buff[1] = 31212; // -32768 to 32767
+
+		array_len = 2;
 		while (array_len < BUFF_LENGTH) {
-			data_buff[array_len++] = rand();
+			value++;
+			data_buff[array_len++] = value; // No need for two's complement
 		}
 		total_n_sample = array_len / 3;
 
@@ -344,7 +344,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 9600;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
